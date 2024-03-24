@@ -1,5 +1,5 @@
 aiogram
 httpx
-pydotenv
+python-dotenv
 fake_useragent
 bs4
