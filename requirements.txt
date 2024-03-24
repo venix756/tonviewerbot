@@ -1,0 +1,5 @@
+aiogram
+httpx
+pydotenv
+fake_useragent
+bs4
