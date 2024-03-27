@@ -13,8 +13,10 @@ from aiogram.client.default import DefaultBotProperties
 load_dotenv()
 dp = Dispatcher()
 
+
 async def main():
-    bot = Bot(os.getenv('BOTAPI_TOKEN'), default=DefaultBotProperties(parse_mode='html'))
+    bot = Bot(os.getenv('BOTAPI_TOKEN'),
+              default=DefaultBotProperties(parse_mode='html'))
     dp.include_routers(router)
     await dp.start_polling(bot)
 

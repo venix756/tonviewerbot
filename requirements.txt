@@ -2,4 +2,5 @@ aiogram
 httpx
 python-dotenv
 fake_useragent
+tonsdk
 bs4
