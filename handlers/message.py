@@ -10,6 +10,7 @@ from aiogram.filters import CommandStart, Command, CommandObject
 from aiogram.types import Message
 
 import datetime
+import logging
 
 username_regex = r'^@[\w\d_]+$'
 number_regex = r'^\+888\d{8,}$'
@@ -44,7 +45,7 @@ async def get(message: Message, command: CommandObject):
         numbers = await tonviewer.get_collectibles(address, os.getenv('NUMBERS_COLLECTION_ADDRESS'))
         domains = await tonviewer.get_collectibles(address, os.getenv('DOMAINS_COLLECTION_ADDRESS'))
 
-        answer = f"<b>Address</b>: {info['address']}\n" \
+        answer = f"<b>Address</b>: <a href='https://tonviewer.com/{info['address']}/'>{info['address']}</a>\n" \
                  f"<b>Balance</b>: {info['balance']/10**9} TON\n" \
                  f"<b>Last Activity</b>: {time.strftime('%Y-%m-%d %H:%M:%S')} (UTC+0)\n" \
                  f"<b>Interfaces</b>: {', '.join(info['interfaces'])}, {info['status']}\n\n" \
@@ -58,8 +59,9 @@ async def get(message: Message, command: CommandObject):
         if domains:
             answer += f"<b>Domains Collection:</b> {join_with_limit(domains)}"
 
-        return await message.answer(answer)
+        return await message.answer(answer, disable_web_page_preview=True)
     except ValueError:
         return await message.answer("Not found")
-    except Exception:
+    except Exception as e:
+        logging.exception(e)
         return await message.answer("An error occurred while processing the request.")
