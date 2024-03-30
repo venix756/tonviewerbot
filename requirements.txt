@@ -4,3 +4,4 @@ python-dotenv
 fake_useragent
 tonsdk
 bs4
+cachetools
