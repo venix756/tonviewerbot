@@ -17,4 +17,3 @@ class TonViewer:
                 f"&limit=1000&offset=0")).json()
         return [item['metadata']['name']
                 for item in data['nft_items']]
-
