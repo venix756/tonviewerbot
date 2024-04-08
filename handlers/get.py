@@ -1,6 +1,7 @@
 import os
 import re
 
+from apis.coinmarketapi import CoinMarketCapAPI
 from apis.fragmentapi import Fragment
 from apis.tonviewerapi import TonViewer
 from middlewares.throttling import ThrottlingMiddleware
@@ -30,7 +31,7 @@ tonviewer = TonViewer(os.getenv('TONAPI_TOKEN'))
 async def get(message: Message, command: CommandObject, lock: asyncio.Lock):
     args = command.args.replace(" ", "")
     msg = await message.answer("<b>Loading...</b>")
-    
+
     try:
         if re.match(username_regex, args) or re.match(number_regex, args):
             address = await Fragment(args).get_address()
@@ -50,10 +51,13 @@ async def get(message: Message, command: CommandObject, lock: asyncio.Lock):
             domains = await tonviewer.get_collectibles(address, os.getenv('DOMAINS_COLLECTION_ADDRESS'))
             await asyncio.sleep(1)
 
+            cmc_api = CoinMarketCapAPI()
+            ton_price = await cmc_api.get_ton_price()
+
         time = datetime.datetime.fromtimestamp(info['last_activity'], tz=datetime.timezone.utc)
 
         answer = f"<b>Address</b>: <a href='https://tonviewer.com/{info['address']}/'>{info['address']}</a>\n" \
-                 f"<b>Balance</b>: {info['balance']/10**9} TON\n" \
+                 f"<b>Balance</b>: {info['balance']/10**9:.3f} TON ≈ {info['balance']/10**9 * ton_price:.3f} USD\n" \
                  f"<b>Last Activity</b>: {time.strftime('%Y-%m-%d %H:%M:%S')} (UTC+0)\n" \
                  f"<b>Interfaces</b>: {', '.join(info['interfaces'])}, {info['status']}\n\n" \
 
@@ -62,7 +66,7 @@ async def get(message: Message, command: CommandObject, lock: asyncio.Lock):
 
         if numbers:
             answer += f"<b>Numbers Collection:</b> {join_with_limit(numbers)}\n\n"
-        
+
         if domains:
             answer += f"<b>Domains Collection:</b> {join_with_limit(domains)}"
 
