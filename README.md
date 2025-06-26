@@ -1,3 +1,5 @@
+## ⚠️ UPDATE: Not relevant, since it was partially integrated into Telegram
+
 # Ton Viewer
 
 Ton Viewer is a web3 bot for Telegram, written with aiogram, which allows you to view information about the TON blockchain wallets through the addresses and names of the Fragment NFTs.
